@@ -24,6 +24,7 @@ app.use('/api/forensic',    require('./routes/forensic'));
 app.use('/api/intentions',  require('./routes/intentions'));
 app.use('/api/future-self', require('./routes/futureSelf'));
 app.use('/api/health',      require('./routes/health'));
+app.use('/api/persona',     require('./routes/persona'));
 
 // Mock data — sadece dev ortamında aktif
 if (process.env.NODE_ENV !== 'production') {
