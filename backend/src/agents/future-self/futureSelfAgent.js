@@ -268,4 +268,128 @@ const getProjections = async (userId) => {
   return { current, optimistic };
 };
 
-module.exports = { futureSelfChat, getProjections, buildPersona };
+// ─────────────────────────────────────────────────────────────
+// WHAT-IF SIMULATOR — Senaryo bazlı projeksiyon
+// ─────────────────────────────────────────────────────────────
+const simulateScenario = async (userId, scenarioText, monthlyChange, changeType) => {
+  console.log(`🎲 What-If senaryo: "${scenarioText}"`);
+
+  // 1. Mevcut persona
+  const persona = await buildPersona(userId);
+
+  if (!persona.monthlyIncome || persona.monthlyIncome === 0) {
+    return {
+      error: 'Gelir bilgisi eksik. Profilini güncelle veya banka ekstreni yükle.',
+    };
+  }
+
+  // 2. Mevcut projeksiyon
+  const currentProjection = calculateProjection(
+    persona.monthlyIncome,
+    persona.monthlySaving
+  );
+
+  // 3. Senaryoya göre yeni tasarruf hesapla
+  // save = tasarruf eklensin, expense = harcama eklensin
+  const change = changeType === 'expense' ? -monthlyChange : monthlyChange;
+  const newMonthlySaving = persona.monthlySaving + change;
+
+  // 4. Simüle projeksiyon
+  const simulatedProjection = calculateProjection(
+    persona.monthlyIncome,
+    newMonthlySaving
+  );
+
+  // 5. 5 yıllık fark
+  const current5y   = currentProjection.current[4]?.net   || 0;
+  const simulated5y = simulatedProjection.current[4]?.net || 0;
+  const diff5year   = simulated5y - current5y;
+
+  // 6. Milestone'lar — her yıl için fark
+  const milestones = currentProjection.current.map((c, i) => {
+    const s = simulatedProjection.current[i];
+    const yearDiff = (s.net - c.net);
+    return {
+      year: c.year,
+      year_label: `${i + 1} yıl sonra`,
+      current_net: Math.round(c.net),
+      simulated_net: Math.round(s.net),
+      diff: Math.round(yearDiff),
+    };
+  });
+
+  // 7. Gemini ile hikaye üret
+  const story = await generateScenarioStory(
+    scenarioText,
+    diff5year,
+    milestones,
+    persona
+  );
+
+  return {
+    scenario: scenarioText,
+    monthly_change: change,
+    current: currentProjection.current,
+    simulated: simulatedProjection.current,
+    diff_5year: Math.round(diff5year),
+    milestones,
+    story,
+    summary: {
+      future_age:       (persona.user?.age || 25) + 5,
+      future_year:      new Date().getFullYear() + 5,
+      current_5y_net:   Math.round(current5y),
+      simulated_5y_net: Math.round(simulated5y),
+    },
+  };
+};
+
+// ─────────────────────────────────────────────────────────────
+// SENARYO HİKAYESİ — Gemini ile somut anlatım
+// ─────────────────────────────────────────────────────────────
+const generateScenarioStory = async (scenarioText, diff5year, milestones, persona) => {
+  const futureYear = new Date().getFullYear() + 5;
+  const futureAge  = (persona.user?.age || 25) + 5;
+
+  const milestoneText = milestones.map(m => 
+    `${m.year_label}: ${m.diff > 0 ? '+' : ''}${m.diff.toLocaleString('tr-TR')} TL`
+  ).join('\n');
+
+  const direction = diff5year > 0 ? 'kazanç' : 'kayıp';
+  const absAmount = Math.abs(diff5year);
+
+  const prompt = `
+Sen ${futureYear} yılında yaşayan, ${futureAge} yaşındaki insansın.
+Sen kullanıcının 5 yıl sonraki halisin.
+
+Kullanıcı şu senaryoyu sordu: "${scenarioText}"
+
+Bu senaryonun 5 yıllık etkisi:
+- Toplam ${direction}: ${absAmount.toLocaleString('tr-TR')} TL
+- Yıl yıl etki:
+${milestoneText}
+
+GÖREV:
+Bu senaryonun somut etkisini hikaye gibi anlat.
+${diff5year > 0 
+  ? `Pozitif bir tablo çiz — bu ${absAmount.toLocaleString('tr-TR')} TL ile neler yapılabilir? 
+     (ev peşinatı, araba, tatil, eğitim, yatırım gibi somut karşılıklar ver)` 
+  : `Riskleri anlat — bu ${absAmount.toLocaleString('tr-TR')} TL kaybın hayatına nasıl yansır?`
+}
+
+KURALLAR:
+1. Türkçe, samimi, "ben" diliyle konuş (kullanıcının kendisisin).
+2. 150-200 kelime arası.
+3. Spesifik rakamlar ve somut karşılıklar kullan.
+4. Sonunda 1 cümleyle eylem öner.
+5. Süslemeden, abartmadan, gerçekçi anlat.
+`.trim();
+
+  try {
+    return await chat(prompt, 'pro');
+  } catch (err) {
+    console.error('Hikaye üretme hatası:', err.message);
+    return `Bu senaryoda 5 yıl sonra ${absAmount.toLocaleString('tr-TR')} TL ${direction === 'kazanç' ? 'fazla' : 'eksik'} olurdu.`;
+  }
+};
+
+module.exports = { futureSelfChat, getProjections, buildPersona, simulateScenario };

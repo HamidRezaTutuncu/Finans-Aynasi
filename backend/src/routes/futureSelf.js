@@ -6,8 +6,8 @@ const {
   futureSelfChat,
   getProjections,
   buildPersona,
+  simulateScenario,
 } = require('../agents/future-self/futureSelfAgent');
-
 const router = express.Router();
 
 const ChatSchema = z.object({
@@ -65,6 +65,39 @@ router.get('/history', authMiddleware, async (req, res, next) => {
       [req.userId]
     );
     res.json({ history: result.rows });
+  } catch (err) { next(err); }
+});
+
+// ── What-If Simülatörü
+const SimulateSchema = z.object({
+  scenario_text:  z.string().min(3).max(200),
+  monthly_change: z.number().positive(),
+  change_type:    z.enum(['save', 'expense']),
+});
+
+router.post('/simulate', authMiddleware, async (req, res, next) => {
+  try {
+    const parsed = SimulateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        error:   'Geçersiz veri',
+        details: parsed.error.flatten(),
+      });
+    }
+
+    const { scenario_text, monthly_change, change_type } = parsed.data;
+    const result = await simulateScenario(
+      req.userId,
+      scenario_text,
+      monthly_change,
+      change_type
+    );
+
+    if (result.error) {
+      return res.status(400).json(result);
+    }
+
+    res.json(result);
   } catch (err) { next(err); }
 });
 
