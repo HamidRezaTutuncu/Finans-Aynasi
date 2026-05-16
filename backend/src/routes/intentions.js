@@ -2,6 +2,7 @@ const express            = require('express');
 const { z }              = require('zod');
 const authMiddleware     = require('../middleware/auth');
 const { pool }           = require('../db');
+const { generateReportPDF } = require('../services/pdf/reportPdf');
 const {
   generateBetrayalReport,
   suggestIntentions,
@@ -112,6 +113,33 @@ router.delete('/:id', authMiddleware, async (req, res, next) => {
     );
     res.json({ message: 'Söz silindi' });
   } catch (err) { next(err); }
+});
+// ── Raporu PDF olarak indir
+router.get('/report/:month/:year/pdf', authMiddleware, async (req, res, next) => {
+  try {
+    const month = parseInt(req.params.month);
+    const year  = parseInt(req.params.year);
+
+    if (isNaN(month) || isNaN(year)) {
+      return res.status(400).json({ error: 'Geçersiz ay veya yıl' });
+    }
+
+    const pdfBuffer = await generateReportPDF(req.userId, month, year);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="finans-aynasi-${year}-${String(month).padStart(2, '0')}.pdf"`
+    );
+    res.setHeader('Content-Length', pdfBuffer.length);
+    res.send(pdfBuffer);
+
+  } catch (err) {
+    if (err.message.includes('rapor bulunamadı')) {
+      return res.status(404).json({ error: err.message });
+    }
+    next(err);
+  }
 });
 
 module.exports = router;
