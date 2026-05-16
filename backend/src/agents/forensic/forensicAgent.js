@@ -87,7 +87,7 @@ Pattern tipleri: time_based | category_spike | night_shopping | weekend_effect |
 `;
 
   const result = await chatJSON(prompt, 'pro', PATTERN_SYSTEM);
-  
+
   // DB'ye kaydet
   if (result.patterns?.length > 0) {
     for (const p of result.patterns) {
@@ -111,7 +111,7 @@ const comparisonAgent = async (transactions, targetMonth, targetYear) => {
   console.log('📊 Comparison Agent çalışıyor...');
 
   // Hedef ay ve bir önceki ay verilerini ayır
-  const targetTxs  = transactions.filter(t => {
+  const targetTxs = transactions.filter(t => {
     const d = new Date(t.date);
     return d.getMonth() + 1 === targetMonth && d.getFullYear() === targetYear;
   });
@@ -170,8 +170,8 @@ const triggerCorrelationAgent = async (transactions) => {
   console.log('⚡ Trigger Correlation Agent çalışıyor...');
 
   // Gün ve saat bazlı gruplandır
-  const byDayOfWeek = groupByDayOfWeek(transactions);
-  const byHour      = groupByHour(transactions);
+  const byDayOfWeek  = groupByDayOfWeek(transactions);
+  const byHour       = groupByHour(transactions);
   const byDayOfMonth = groupByDayOfMonth(transactions);
 
   const prompt = `
@@ -275,18 +275,18 @@ const runForensicAnalysis = async (userId, question, month, year) => {
   );
   const userIncome = userResult.rows[0]?.monthly_income;
 
-  // 3. Agent zinciri — paralel çalıştır (hız için)
+  // 3. Agent zinciri — rate limit için araya kısa bekleme
   const targetMonth = month || new Date().getMonth() + 1;
   const targetYear  = year  || new Date().getFullYear();
 
   const patterns = await patternDetectionAgent(transactions, userId);
-await new Promise(r => setTimeout(r, 3000));
+  await new Promise(r => setTimeout(r, 3000));
 
-const comparison = await comparisonAgent(transactions, targetMonth, targetYear);
-await new Promise(r => setTimeout(r, 3000));
+  const comparison = await comparisonAgent(transactions, targetMonth, targetYear);
+  await new Promise(r => setTimeout(r, 3000));
 
-const triggers = await triggerCorrelationAgent(transactions);
-await new Promise(r => setTimeout(r, 3000));
+  const triggers = await triggerCorrelationAgent(transactions);
+  await new Promise(r => setTimeout(r, 3000));
 
   // 4. Recommendation agent (diğerlerinin çıktısına bağımlı)
   const recommendations = await recommendationAgent(
@@ -342,9 +342,9 @@ ${context}
 // YARDIMCI FONKSİYONLAR
 // ─────────────────────────────────────────────────────────────
 const buildTransactionSummary = (transactions) => {
-  const byCategory = {};
+  const byCategory  = {};
   const byDayOfWeek = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0 };
-  const byHour = {};
+  const byHour      = {};
   let totalDebit = 0;
 
   for (const t of transactions) {

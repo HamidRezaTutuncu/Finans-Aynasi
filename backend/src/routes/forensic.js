@@ -1,10 +1,6 @@
 const express        = require('express');
 const authMiddleware = require('../middleware/auth');
-const {
-  runForensicAnalysis,
-  patternDetectionAgent,
-  comparisonAgent,
-} = require('../agents/forensic/forensicAgent');
+const { runForensicAnalysis } = require('../agents/forensic/forensicAgent');
 const { pool } = require('../db');
 const router = express.Router();
 

@@ -12,6 +12,7 @@ const getModel = (tier = 'flash', systemInstruction = '') => {
     generationConfig: {
       temperature: tier === 'pro' ? 0.1 : 0.4,
       maxOutputTokens: 8192,
+      
     },
   });
 };
