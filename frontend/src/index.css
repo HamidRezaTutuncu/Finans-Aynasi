@@ -1,0 +1,540 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ============================================================
+   PROSPEKT — Tasarım Sistemi
+   Renk Paleti & CSS Değişkenleri
+   ============================================================ */
+
+:root {
+  /* Ana Renkler */
+  --color-primary: #003049;        /* Deep Space Blue */
+  --color-secondary: #669bbc;      /* Steel Blue */
+  --color-accent: #c1121f;         /* Flag Red */
+  --color-accent-dark: #780000;    /* Molten Lava */
+  --color-bg: #fdf0d5;             /* Papaya Whip */
+  --color-bg-white: #ffffff;
+  --color-text: #1a1a2e;
+  --color-text-light: #fdf0d5;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+
+  /* Modül Renkleri */
+  --color-module-forensic: #6366f1;
+  --color-module-future: #8b5cf6;
+  --color-module-whatif: #ec4899;
+  --color-module-mirror: #f59e0b;
+  --color-module-health: #10b981;
+  --color-module-persona: #f97316;
+  --color-module-general: #6b7280;
+
+  /* Spacing & Layout */
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 72px;
+  --header-height: 64px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.10);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================================
+   GLOBAL RESET & BASE STYLES
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ============================================================
+   GOOGLE FONTS IMPORT (Moved to top)
+   ============================================================ */
+
+
+/* ============================================================
+   TAILWIND CUSTOM THEME (v4 stil)
+   ============================================================ */
+
+@theme {
+  --color-primary: #003049;
+  --color-primary-light: #004a6e;
+  --color-secondary: #669bbc;
+  --color-secondary-light: #8ab5d1;
+  --color-accent: #c1121f;
+  --color-accent-dark: #780000;
+  --color-bg: #fdf0d5;
+  --color-bg-white: #ffffff;
+  --color-text-main: #1a1a2e;
+  --color-text-light: #fdf0d5;
+  --color-text-muted: #64748b;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+/* ============================================================
+   SCROLLBAR STİLİ
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-secondary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* ============================================================
+   SELECTION
+   ============================================================ */
+
+::selection {
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+.container-app {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-light {
+  background: linear-gradient(135deg, #ffffff 0%, var(--color-bg) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #004a6e 50%, var(--color-secondary) 100%);
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, var(--color-accent-dark) 0%, var(--color-accent) 100%);
+}
+
+.card {
+  background: var(--color-bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+}
+
+.card-hover {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* ============================================================
+   BUTTON TEMEL STİLLERİ
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #004a6e;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-accent {
+  background: var(--color-accent);
+  color: white;
+}
+
+.btn-accent:hover:not(:disabled) {
+  background: var(--color-accent-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(0,0,0,0.06);
+  color: var(--color-text);
+}
+
+.btn-lg {
+  padding: 14px 28px;
+  font-size: 1rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   INPUT STİLLERİ
+   ============================================================ */
+
+.input-field {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-bg-white);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+}
+
+.input-field::placeholder {
+  color: #94a3b8;
+}
+
+.input-field:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(102, 155, 188, 0.18);
+}
+
+.input-field.error {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(193, 18, 31, 0.12);
+}
+
+/* ============================================================
+   ANIMASYONLAR
+   ============================================================ */
+
+@keyframes pulse-cta {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(193,18,31,0.4); }
+  50% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(193,18,31,0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(2deg); }
+  66% { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes typing-dot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pulse-cta {
+  animation: pulse-cta 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   MODÜL ETİKETİ STİLLERİ
+   ============================================================ */
+
+.module-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 8px;
+}
+
+/* ============================================================
+   CHAT STİLLERİ
+   ============================================================ */
+
+.message-user {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.message-user .bubble {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  padding: 12px 16px;
+  border-radius: 18px 18px 4px 18px;
+  max-width: 70%;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.message-ai {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.message-ai .bubble {
+  background: var(--color-bg-white);
+  color: var(--color-text);
+  padding: 14px 18px;
+  border-radius: 4px 18px 18px 18px;
+  max-width: 80%;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  animation: typing-dot 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ============================================================
+   SIDEBAR STİLLERİ
+   ============================================================ */
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-slow);
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  color: rgba(253, 240, 213, 0.7);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--color-text-light);
+}
+
+.sidebar-item.active {
+  background: rgba(102, 155, 188, 0.25);
+  color: var(--color-text-light);
+  border-left: 3px solid var(--color-secondary);
+}
+
+/* ============================================================
+   HEALTH SCORE DAIRESEL GÖSTERGE
+   ============================================================ */
+
+.health-ring {
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+
+/* ============================================================
+   MARKDOWN İÇİNDE STİL
+   ============================================================ */
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  color: var(--color-primary);
+  margin: 12px 0 6px;
+}
+
+.markdown-content p {
+  margin-bottom: 8px;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 20px;
+  margin-bottom: 8px;
+}
+
+.markdown-content li {
+  margin-bottom: 4px;
+}
+
+.markdown-content strong {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.markdown-content code {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: 'Courier New', monospace;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 100%;
+  }
+
+  .container-app {
+    padding: 0 16px;
+  }
+
+  .message-user .bubble,
+  .message-ai .bubble {
+    max-width: 90%;
+  }
+}
