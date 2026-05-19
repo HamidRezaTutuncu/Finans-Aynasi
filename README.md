@@ -108,7 +108,6 @@ Profesyonel PDF raporları:
 ---
 
 ## 📐 Sistem Mimarisi
-Detaylı sistem mimarisi, database şeması, security layers ve scalability planı için [ARCHITECTURE.md](./ARCHITECTURE.md) dosyasını gör.
 
 ### Özet
 
