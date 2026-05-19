@@ -108,3 +108,24 @@ Profesyonel PDF raporları:
 ---
 
 ## 📐 Sistem Mimarisi
+Detaylı sistem mimarisi, database şeması, security layers ve scalability planı için [ARCHITECTURE.md](./ARCHITECTURE.md) dosyasını gör.
+
+### Özet
+
+```
+┌─────────────────┐
+│  React Frontend │
+│  (Vite + Taill) │
+└────────┬────────┘
+         │ REST API
+┌────────▼────────────────────┐
+│  Express Backend (7 Agents)  │
+│ - Router Agent               │
+│ - Forensic, Future, What-If  │
+│ - Health, Persona, Intention │
+└────────┬────────────────────┘
+         │
+┌────────▼─────────────────────┐
+│  PostgreSQL + Gemini API     │
+│  + 3-tier Cache              │
+└──────────────────────────────┘
