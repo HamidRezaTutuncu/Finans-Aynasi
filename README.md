@@ -772,9 +772,9 @@ BTK Akademi Hackathon 2026 — Bireysel Katılımcı
 
 > Bu projeyi 4-5 günde tek başıma geliştirdim. Multi-agent mimari, halüsinasyon önleme, cache stratejileri, branding, frontend animasyonları, deploy süreci — hepsi tek adamın elinden çıktı. 💪
 
-📧 **Email:** [hamid@example.com]  
-🐙 **GitHub:** [@hamidthegamer](https://github.com/...)  
-💼 **LinkedIn:** [linkedin.com/in/hamid](https://linkedin.com/in/...)
+📧 **Email:** [hamid.tt711@gmail.com]  
+🐙 **GitHub:** [Hamidrezatoutounchi](https://github.com/...](https://github.com/HamidRezaTutuncu))  
+💼 **LinkedIn:** [linkedin.com/in/hamid][(https://www.linkedin.com/in/hamidreza-toutounchi-64840218b/))
 
 ---
 
