@@ -11,7 +11,16 @@ const app = express();
 
 // ── Güvenlik & Middleware ──────────────────────────────────────
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000' }));
+app.use(cors({ 
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    process.env.CLIENT_URL,
+  ].filter(Boolean),
+  credentials: true,
+}));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 
@@ -25,11 +34,10 @@ app.use('/api/intentions',  require('./routes/intentions'));
 app.use('/api/future-self', require('./routes/futureSelf'));
 app.use('/api/health',      require('./routes/health'));
 app.use('/api/persona',     require('./routes/persona'));
+app.use('/api/chat',        require('./routes/chat'));
 
 // Mock data — sadece dev ortamında aktif
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/api/seed', require('./routes/seed'));
-}
+
 
 // ── Merkezi Hata Handler ──────────────────────────────────────
 // eslint-disable-next-line no-unused-vars
@@ -39,6 +47,16 @@ app.use((err, req, res, next) => {
   console.error(`[ERROR] ${status} — ${message}`, err.stack || '');
   res.status(status).json({ error: message });
 });
+
+// Cache istatistikleri (dev only)
+if (process.env.NODE_ENV !== 'production') {
+  const { getStats, flushAll } = require('./services/cache');
+  app.get('/api/cache/stats', (req, res) => res.json(getStats()));
+  app.delete('/api/cache/flush', (req, res) => {
+    flushAll();
+    res.json({ message: 'Cache temizlendi' });
+  });
+}
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () =>

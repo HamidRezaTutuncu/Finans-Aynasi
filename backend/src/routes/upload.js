@@ -3,6 +3,7 @@ const multer       = require('multer');
 const { parseFile } = require('../services/parsers/transactionParser');
 const { pool }     = require('../db');
 const authMiddleware = require('../middleware/auth');
+const { invalidateUser } = require('../services/cache');
 const router       = express.Router();
 
 const upload = multer({
@@ -65,7 +66,10 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res, next) =
       client.release();
     }
 
-    console.log(`✅ ${saved} işlem DB'ye kaydedildi`);
+    // 3. Cache temizle — yeni veri geldi, eski analizler geçersiz
+    invalidateUser(req.userId);
+
+    console.log(`✅ ${saved} işlem DB'ye kaydedildi (cache temizlendi)`);
 
     res.json({
       message: `${saved} işlem başarıyla yüklendi`,
