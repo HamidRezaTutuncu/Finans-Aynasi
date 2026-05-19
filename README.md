@@ -558,7 +558,7 @@ Geliştirme aşamasında test için kullanılan veri:
 ```
 Email: civa@civan.com
 Password: 123456
-İsim: Ahmet Yılmaz
+İsim: civan demir
 Yaş: 28
 Şehir: İstanbul
 Aylık Gelir: 25000 TL
