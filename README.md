@@ -556,12 +556,12 @@ Geliştirme aşamasında test için kullanılan veri:
 ### Test Kullanıcı
 
 ```
-Email: test@prospekt.com
-Password: Test123456!
+Email: civa@civan.com
+Password: 123456
 İsim: Ahmet Yılmaz
 Yaş: 28
 Şehir: İstanbul
-Aylık Gelir: 45.000 TL
+Aylık Gelir: 25000 TL
 ```
 
 ### Test Banka Ekstresi
